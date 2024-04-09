@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profiles</title>
+  <style>
+    /* CSS styles for the User Profiles */
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    .app {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      margin-bottom: 20px;
+      padding: 8px;
+      font-size: 16px;
+    }
+
+    .user-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .user-profile {
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    .user-profile img {
+      max-width: 100%;
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body>
+  <div id="root" class="app"></div>
+  <script src="https://www.unpkg.com/react@18.2.0/umd/react.development.js"></script>
+  <script src="https://www.unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    // User Profile Component
+    const UserProfile = ({ user }) => {
+      return (
+        <div className="user-profile">
+          <img src={user.avatar} alt={user.name} />
+          <h3>{user.name}</h3>
+          <p>{user.email}</p>
+        </div>
+      );
+    };
+
+    // App Component
+    const App = () => {
+      const [searchTerm, setSearchTerm] = React.useState('');
+      const [filteredUsers, setFilteredUsers] = React.useState(userData);
+
+      const handleSearchChange = (event) => {
+        setSearchTerm(event.target.value);
+        filterUsers(event.target.value);
+      };
+
+      const filterUsers = (query) => {
+        const filtered = userData.filter(user =>
+          user.name.toLowerCase().includes(query.toLowerCase())
+        );
+        setFilteredUsers(filtered);
+      };
+
+      return (
+        <div className="app">
+          <h1>User Profiles</h1>
+          {/* Search input */}
+          <input
+            type="text"
+            placeholder="Search by name"
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+          {/* Render filtered user profiles */}
+          <div className="user-list">
+            {filteredUsers.map(user => (
+              <UserProfile key={user.id} user={user} />
+            ))}
+          </div>
+        </div>
+      );
+    };
+
+    // Sample user data
+    const userData = [
+      {
+        id: 1,
+        name: 'Rohit Sharma',
+        email: 'abc@example.com',
+        avatar: 'https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671142.jpg?w=1060&t=st=1712679036~exp=1712679636~hmac=02490bfbb3365528b29daff695cd01160b6c9ce098a3a71ad99345ab63ef50a5'
+      },
+      {
+        id: 2,
+        name: 'Virat Kohli',
+        email: 'avc@example.com',
+        avatar: 'https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671122.jpg?w=1060&t=st=1712679077~exp=1712679677~hmac=6decc3af97ad3d984c90b1515a7f66d765dd977d9c15e16886da9329724731f4'
+      },
+
+    ];
+
+    // Render the App component into the root div
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
