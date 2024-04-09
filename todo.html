@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ToDo List</title>
+  <style>
+    /* CSS styles for the ToDo List */
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    /* Container for the ToDo list */
+    .todo-container {
+      width: 300px;
+      margin: 20px auto;
+    }
+
+    /* Styles for each todo item */
+    .todo-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+
+    /* Style for completed items */
+    .completed {
+      text-decoration: line-through;
+    }
+
+    /* Styles for buttons */
+    .btn {
+      margin-left: 5px;
+      cursor: pointer;
+    }
+
+    /* Styles for the input container */
+    .input-container {
+      display: flex;
+      margin-bottom: 10px;
+    }
+
+    /* Styles for the input field */
+    .input-container input[type="text"] {
+      flex-grow: 1;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://www.unpkg.com/react@18.2.0/umd/react.development.js"></script>
+  <script src="https://www.unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    // React component for the ToDo List
+    const ToDoList = () => {
+      // State to manage the list of todos and the new todo input
+      const [todos, setTodos] = React.useState([]);
+      const [newTodo, setNewTodo] = React.useState('');
+
+      // Event handler for input change
+      const handleInputChange = (event) => {
+        setNewTodo(event.target.value);
+      };
+
+      // Event handler for form submit
+      const handleFormSubmit = (event) => {
+        event.preventDefault();
+        if (newTodo.trim() !== '') {
+          const newTodoItem = { id: Date.now(), text: newTodo, completed: false };
+          setTodos([...todos, newTodoItem]);
+          setNewTodo('');
+        }
+      };
+
+      // Event handler for deleting a todo item
+      const handleDeleteTodo = (id) => {
+        const updatedTodos = todos.filter(todo => todo.id !== id);
+        setTodos(updatedTodos);
+      };
+
+      // Event handler for toggling completion status
+      const handleToggleComplete = (id) => {
+        const updatedTodos = todos.map(todo =>
+          todo.id === id ? { ...todo, completed: !todo.completed } : todo
+        );
+        setTodos(updatedTodos);
+      };
+
+      // Render the ToDo list and form
+      return (
+        <div className="todo-container">
+          {/* Form for adding new todo items */}
+          <form onSubmit={handleFormSubmit} className="input-container">
+            <input type="text" value={newTodo} onChange={handleInputChange} placeholder="Enter a new task" />
+            <button type="submit">Add</button>
+          </form>
+          {/* List of todo items */}
+          <ul>
+            {todos.map(todo => (
+              <li key={todo.id} className={`todo-item ${todo.completed ? 'completed' : ''}`}>
+                {/* Checkbox for completion status */}
+                <input type="checkbox" checked={todo.completed} onChange={() => handleToggleComplete(todo.id)} />
+                {/* Todo item text */}
+                {todo.text}
+                {/* Delete button */}
+                <button className="btn" onClick={() => handleDeleteTodo(todo.id)}>Delete</button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      );
+    };
+
+    // Render the ToDoList component into the root div
+    ReactDOM.render(<ToDoList />, document.getElementById('root'));
+  </script>
+</body>
+</html>
